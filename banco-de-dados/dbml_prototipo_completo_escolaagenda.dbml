@@ -1,0 +1,364 @@
+Project prototipo_completo_escolaagenda {
+  database_type: "PostgreSQL"
+  Note: "Modelo completo para sustentar o prototipo EscolaAgenda: agenda escolar, agenda do professor, direcao, notificacoes, planos de aula, validacoes e rastreabilidade."
+}
+
+Enum papel_usuario {
+  professor
+  diretor
+  coordenador
+  vice_diretor
+  secretario
+  administrador
+}
+
+Enum status_usuario {
+  ativo
+  inativo
+  bloqueado
+  pendente
+}
+
+Enum tipo_turma {
+  fundamental
+  medio
+  tecnico
+  outro
+}
+
+Enum categoria_evento {
+  aula
+  reuniao
+  avaliacao
+  planejamento
+  tutoria
+  pais
+  institucional
+  conselho_classe
+  formacao
+  apoio_presencial
+  pausa
+  outro
+}
+
+Enum status_evento {
+  rascunho
+  agendado
+  confirmado
+  cancelado
+  concluido
+}
+
+Enum tipo_recorrencia {
+  nenhuma
+  semanal
+  quinzenal
+  mensal
+}
+
+Enum status_plano_aula {
+  rascunho
+  enviado
+  em_validacao
+  aprovado
+  rejeitado
+  revisao_solicitada
+}
+
+Enum tipo_notificacao {
+  reuniao
+  evento
+  validacao
+  atualizacao
+  lembrete
+  sistema
+}
+
+Enum prioridade_notificacao {
+  baixa
+  media
+  alta
+}
+
+Enum canal_notificacao {
+  interna
+  email
+  push
+  whatsapp
+}
+
+Enum status_validacao {
+  pendente
+  aprovado
+  rejeitado
+}
+
+Enum tipo_destinatario {
+  usuario
+  papel
+  turma
+  todos
+}
+
+Table escolas {
+  id uuid [pk]
+  nome varchar(200) [not null]
+  sigla varchar(50)
+  cnpj varchar(20)
+  ano_letivo integer
+  timezone varchar(60) [default: "America/Sao_Paulo"]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table usuarios {
+  id uuid [pk]
+  escola_id uuid [not null, ref: > escolas.id]
+  nome varchar(200) [not null]
+  email varchar(200) [not null, unique]
+  senha_hash varchar(255) [not null]
+  papel papel_usuario [not null]
+  status status_usuario [not null, default: "ativo"]
+  telefone varchar(30)
+  foto_url varchar(255)
+  ultimo_acesso_em timestamp
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table perfis_profissionais {
+  id uuid [pk]
+  usuario_id uuid [not null, unique, ref: > usuarios.id]
+  codigo_funcional varchar(50)
+  cargo varchar(100)
+  observacoes text
+}
+
+Table disciplinas {
+  id uuid [pk]
+  escola_id uuid [not null, ref: > escolas.id]
+  nome varchar(120) [not null]
+  area_conhecimento varchar(120)
+  cor_hex varchar(7)
+  ativo boolean [not null, default: true]
+}
+
+Table turmas {
+  id uuid [pk]
+  escola_id uuid [not null, ref: > escolas.id]
+  codigo varchar(50) [not null]
+  nome_exibicao varchar(100) [not null]
+  tipo tipo_turma [not null]
+  serie_ano varchar(50)
+  turno varchar(30)
+  sala_base varchar(80)
+  ativo boolean [not null, default: true]
+}
+
+Table salas {
+  id uuid [pk]
+  escola_id uuid [not null, ref: > escolas.id]
+  nome varchar(120) [not null]
+  bloco varchar(50)
+  capacidade integer
+  tipo varchar(50)
+  ativa boolean [not null, default: true]
+}
+
+Table professor_turma_disciplina {
+  id uuid [pk]
+  professor_id uuid [not null, ref: > usuarios.id]
+  turma_id uuid [not null, ref: > turmas.id]
+  disciplina_id uuid [not null, ref: > disciplinas.id]
+  ano_letivo integer [not null]
+  ativo boolean [not null, default: true]
+}
+
+Table calendarios {
+  id uuid [pk]
+  escola_id uuid [not null, ref: > escolas.id]
+  nome varchar(150) [not null]
+  tipo varchar(30) [not null, note: "institucional, professor, direcao, coordenacao"]
+  proprietario_usuario_id uuid [ref: > usuarios.id]
+  descricao text
+  cor_hex varchar(7)
+  ativo boolean [not null, default: true]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table faixas_horario {
+  id uuid [pk]
+  escola_id uuid [not null, ref: > escolas.id]
+  nome varchar(80)
+  ordem integer [not null]
+  hora_inicio time [not null]
+  hora_fim time [not null]
+  tipo varchar(30) [not null, note: "aula, intervalo, almoco, reuniao"]
+  ativo boolean [not null, default: true]
+}
+
+Table eventos {
+  id uuid [pk]
+  calendario_id uuid [not null, ref: > calendarios.id]
+  criado_por_usuario_id uuid [not null, ref: > usuarios.id]
+  responsavel_usuario_id uuid [ref: > usuarios.id]
+  disciplina_id uuid [ref: > disciplinas.id]
+  turma_id uuid [ref: > turmas.id]
+  sala_id uuid [ref: > salas.id]
+  faixa_horario_id uuid [ref: > faixas_horario.id]
+  titulo varchar(200) [not null]
+  descricao text
+  categoria categoria_evento [not null]
+  status status_evento [not null, default: "agendado"]
+  data_inicio timestamp [not null]
+  data_fim timestamp [not null]
+  dia_inteiro boolean [not null, default: false]
+  recorrencia_tipo tipo_recorrencia [not null, default: "nenhuma"]
+  recorrencia_intervalo integer [not null, default: 1]
+  recorrencia_fim_em date
+  origem varchar(30) [note: "manual, importacao, sistema"]
+  evento_pai_id uuid [ref: > eventos.id]
+  criado_em timestamp [not null]
+  atualizado_em timestamp [not null]
+}
+
+Table evento_participantes {
+  id uuid [pk]
+  evento_id uuid [not null, ref: > eventos.id]
+  usuario_id uuid [ref: > usuarios.id]
+  turma_id uuid [ref: > turmas.id]
+  nome_livre varchar(200)
+  tipo_participante varchar(50) [note: "organizador, convidado, turma, externo"]
+  confirmou_presenca boolean
+}
+
+Table eventos_excecao {
+  id uuid [pk]
+  evento_id uuid [not null, ref: > eventos.id]
+  data_referencia date [not null]
+  acao varchar(30) [not null, note: "cancelar, mover, sobrescrever"]
+  novo_inicio timestamp
+  novo_fim timestamp
+  observacao text
+}
+
+Table calendario_excecoes {
+  id uuid [pk]
+  escola_id uuid [not null, ref: > escolas.id]
+  titulo varchar(150) [not null]
+  descricao text
+  tipo varchar(30) [not null, note: "feriado, ferias, recesso, ponto_facultativo"]
+  data_inicio date [not null]
+  data_fim date
+  impacta_todas_agendas boolean [not null, default: true]
+  criado_por_usuario_id uuid [ref: > usuarios.id]
+}
+
+Table planos_aula {
+  id uuid [pk]
+  professor_id uuid [not null, ref: > usuarios.id]
+  turma_id uuid [not null, ref: > turmas.id]
+  disciplina_id uuid [not null, ref: > disciplinas.id]
+  evento_id uuid [ref: > eventos.id]
+  titulo varchar(200) [not null]
+  competencia text
+  habilidade text
+  objetivo text
+  conteudo text
+  metodologia text
+  avaliacao text
+  observacoes text
+  status status_plano_aula [not null, default: "rascunho"]
+  referencia_data date
+  enviado_em timestamp
+  atualizado_em timestamp [not null]
+  criado_em timestamp [not null]
+}
+
+Table anexos {
+  id uuid [pk]
+  escola_id uuid [not null, ref: > escolas.id]
+  uploader_usuario_id uuid [not null, ref: > usuarios.id]
+  nome_arquivo varchar(255) [not null]
+  mime_type varchar(100)
+  tamanho_bytes bigint
+  storage_path varchar(255) [not null]
+  url_publica varchar(255)
+  criado_em timestamp [not null]
+}
+
+Table plano_aula_anexos {
+  id uuid [pk]
+  plano_aula_id uuid [not null, ref: > planos_aula.id]
+  anexo_id uuid [not null, ref: > anexos.id]
+}
+
+Table validacoes_plano_aula {
+  id uuid [pk]
+  plano_aula_id uuid [not null, ref: > planos_aula.id]
+  avaliador_usuario_id uuid [not null, ref: > usuarios.id]
+  status status_validacao [not null]
+  parecer text
+  criado_em timestamp [not null]
+}
+
+Table notificacoes {
+  id uuid [pk]
+  escola_id uuid [not null, ref: > escolas.id]
+  tipo tipo_notificacao [not null]
+  prioridade prioridade_notificacao [not null, default: "media"]
+  titulo varchar(200) [not null]
+  descricao text [not null]
+  referencia_tipo varchar(50) [note: "evento, plano_aula, validacao, sistema"]
+  referencia_id uuid
+  action_label varchar(80)
+  action_url varchar(255)
+  criada_em timestamp [not null]
+}
+
+Table notificacao_destinatarios {
+  id uuid [pk]
+  notificacao_id uuid [not null, ref: > notificacoes.id]
+  usuario_id uuid [ref: > usuarios.id]
+  papel papel_usuario
+  turma_id uuid [ref: > turmas.id]
+  tipo_destinatario tipo_destinatario [not null]
+  lida_em timestamp
+  enviada_em timestamp
+  canal canal_notificacao [not null, default: "interna"]
+}
+
+Table metricas_dashboard {
+  id uuid [pk]
+  escola_id uuid [not null, ref: > escolas.id]
+  data_referencia date [not null]
+  eventos_agendados integer [not null, default: 0]
+  eventos_concluidos integer [not null, default: 0]
+  planos_pendentes integer [not null, default: 0]
+  notificacoes_nao_lidas integer [not null, default: 0]
+  conflitos_horario integer [not null, default: 0]
+  atualizado_em timestamp [not null]
+}
+
+Table configuracoes_notificacao {
+  id uuid [pk]
+  usuario_id uuid [not null, ref: > usuarios.id]
+  recebe_email boolean [not null, default: true]
+  recebe_push boolean [not null, default: true]
+  recebe_whatsapp boolean [not null, default: false]
+  antecedencia_lembrete_minutos integer [not null, default: 30]
+}
+
+Table auditoria {
+  id uuid [pk]
+  escola_id uuid [not null, ref: > escolas.id]
+  usuario_id uuid [ref: > usuarios.id]
+  entidade varchar(80) [not null]
+  entidade_id uuid [not null]
+  acao varchar(50) [not null]
+  antes json
+  depois json
+  criado_em timestamp [not null]
+}
+

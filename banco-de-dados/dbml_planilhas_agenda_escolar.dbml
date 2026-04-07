@@ -1,0 +1,177 @@
+Project planilhas_agenda_escolar {
+  database_type: "PostgreSQL"
+  Note: "Modelo enxuto derivado das planilhas e do ODT. Foca no nucleo de agendas, eventos, recorrencias e excecoes."
+}
+
+Enum papel_profissional {
+  professor
+  diretor
+  coordenador
+  vice_diretor
+  administrativo
+  outro
+}
+
+Enum categoria_evento {
+  aula
+  reuniao
+  planejamento
+  tutoria
+  apoio_presencial
+  avaliacao
+  evento_institucional
+  pausa
+  tarefa
+  outro
+}
+
+Enum tipo_recorrencia {
+  semanal
+  quinzenal
+  mensal
+}
+
+Enum tipo_excecao_calendario {
+  feriado
+  ferias
+  ponto_facultativo
+  recesso
+  suspensao
+  outro
+}
+
+Table escolas {
+  id integer [pk, increment]
+  nome varchar(200) [not null]
+  sigla varchar(50)
+  ano_letivo integer
+  created_at timestamp
+}
+
+Table profissionais {
+  id integer [pk, increment]
+  escola_id integer [not null, ref: > escolas.id]
+  nome varchar(200) [not null]
+  papel papel_profissional [not null]
+  observacoes text
+  created_at timestamp
+}
+
+Table disciplinas {
+  id integer [pk, increment]
+  nome varchar(120) [not null, unique]
+  area_conhecimento varchar(120)
+  observacoes text
+}
+
+Table turmas {
+  id integer [pk, increment]
+  escola_id integer [not null, ref: > escolas.id]
+  codigo varchar(50) [not null]
+  nome_exibicao varchar(100)
+  etapa_ensino varchar(50)
+  serie_ano varchar(50)
+  turno varchar(30)
+  observacoes text
+}
+
+Table locais {
+  id integer [pk, increment]
+  escola_id integer [not null, ref: > escolas.id]
+  nome varchar(120) [not null]
+  tipo varchar(50)
+  capacidade integer
+  observacoes text
+}
+
+Table agendas {
+  id integer [pk, increment]
+  escola_id integer [not null, ref: > escolas.id]
+  profissional_id integer [ref: > profissionais.id]
+  nome varchar(150) [not null]
+  tipo varchar(30) [not null, note: "institucional, individual, setor"]
+  descricao text
+  data_inicio date
+  data_fim date
+  origem varchar(50) [note: "csv, odt, manual"]
+  created_at timestamp
+}
+
+Table faixas_horario {
+  id integer [pk, increment]
+  escola_id integer [not null, ref: > escolas.id]
+  nome varchar(80)
+  hora_inicio time [not null]
+  hora_fim time [not null]
+  tipo varchar(30) [note: "aula, intervalo, almoco, livre"]
+  ordem integer
+}
+
+Table eventos_agenda {
+  id integer [pk, increment]
+  agenda_id integer [not null, ref: > agendas.id]
+  profissional_id integer [ref: > profissionais.id]
+  disciplina_id integer [ref: > disciplinas.id]
+  turma_id integer [ref: > turmas.id]
+  local_id integer [ref: > locais.id]
+  faixa_horario_id integer [ref: > faixas_horario.id]
+  titulo varchar(200) [not null]
+  categoria categoria_evento [not null]
+  descricao text
+  data_evento date
+  dia_semana smallint [note: "1=segunda ... 7=domingo; usado para agendas recorrentes"]
+  hora_inicio time
+  hora_fim time
+  recorrente boolean [not null, default: false]
+  status varchar(30) [default: "ativo"]
+  origem_texto text [note: "texto original importado da planilha"]
+  created_at timestamp
+}
+
+Table recorrencias_evento {
+  id integer [pk, increment]
+  evento_id integer [not null, unique, ref: > eventos_agenda.id]
+  tipo tipo_recorrencia [not null]
+  intervalo integer [not null, default: 1]
+  dias_semana varchar(30) [note: "lista serializada para importacao inicial; ex.: 1,3,5"]
+  data_inicio date [not null]
+  data_fim date
+}
+
+Table excecoes_calendario {
+  id integer [pk, increment]
+  escola_id integer [not null, ref: > escolas.id]
+  agenda_id integer [ref: > agendas.id]
+  tipo tipo_excecao_calendario [not null]
+  titulo varchar(150) [not null]
+  descricao text
+  data_inicio date [not null]
+  data_fim date
+  created_at timestamp
+}
+
+Table observacoes_agenda {
+  id integer [pk, increment]
+  agenda_id integer [not null, ref: > agendas.id]
+  data_referencia date
+  titulo varchar(150)
+  conteudo text [not null]
+  categoria varchar(50) [note: "observacao, tarefa, lembrete"]
+  created_at timestamp
+}
+
+Table participantes_evento {
+  id integer [pk, increment]
+  evento_id integer [not null, ref: > eventos_agenda.id]
+  profissional_id integer [ref: > profissionais.id]
+  nome_livre varchar(200) [note: "usado quando o participante veio apenas como texto na planilha"]
+  papel_no_evento varchar(50)
+}
+
+Table recursos_evento {
+  id integer [pk, increment]
+  evento_id integer [not null, ref: > eventos_agenda.id]
+  descricao varchar(200) [not null]
+  detalhes text
+}
+

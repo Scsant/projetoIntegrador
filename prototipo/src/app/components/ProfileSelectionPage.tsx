@@ -51,9 +51,9 @@ export function ProfileSelectionPage() {
 
   const handleContinue = () => {
     if (!selectedProfile) return;
-    
+
     setIsLoading(true);
-    
+
     // Simular navegação para dashboard
     setTimeout(() => {
       navigate('/dashboard');
@@ -66,17 +66,17 @@ export function ProfileSelectionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-[#0f0a0f] dark:to-[#1a101a] p-4">
       {/* Header */}
       <div className="max-w-6xl mx-auto pt-6 pb-8">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
-            <Calendar className="w-8 h-8 text-blue-600" />
-            <span className="text-2xl font-bold text-gray-900">EscolaAgenda</span>
+            <Calendar className="w-8 h-8 text-blue-600 dark:text-pink-300" />
+            <span className="text-2xl font-bold text-gray-900 dark:text-white">EscolaAgenda</span>
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+            className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
           >
             <LogOut className="w-5 h-5" />
             <span className="hidden sm:inline">Sair</span>
@@ -92,39 +92,39 @@ export function ProfileSelectionPage() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Selecione seu perfil
           </h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300">
             Escolha como você deseja acessar a plataforma
           </p>
         </motion.div>
 
         {/* Profile cards */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {profiles.map((profile, index) => {
             const isSelected = selectedProfile === profile.id;
             const colorClasses = {
               blue: {
-                bg: 'bg-blue-600',
-                border: 'border-blue-600',
-                text: 'text-blue-600',
-                bgLight: 'bg-blue-50',
-                hover: 'hover:border-blue-400'
+                bg: 'bg-blue-600 dark:bg-pink-600',
+                border: 'border-blue-600 dark:border-pink-500',
+                text: 'text-blue-600 dark:text-pink-300',
+                bgLight: 'bg-blue-50 dark:bg-fuchsia-950/70',
+                hover: 'hover:border-blue-400 dark:hover:border-pink-700'
               },
               purple: {
-                bg: 'bg-purple-600',
-                border: 'border-purple-600',
-                text: 'text-purple-600',
-                bgLight: 'bg-purple-50',
-                hover: 'hover:border-purple-400'
+                bg: 'bg-purple-600 dark:bg-purple-700',
+                border: 'border-purple-600 dark:border-purple-500',
+                text: 'text-purple-600 dark:text-purple-300',
+                bgLight: 'bg-purple-50 dark:bg-purple-950/70',
+                hover: 'hover:border-purple-400 dark:hover:border-purple-700'
               },
               green: {
-                bg: 'bg-green-600',
-                border: 'border-green-600',
-                text: 'text-green-600',
-                bgLight: 'bg-green-50',
-                hover: 'hover:border-green-400'
+                bg: 'bg-green-600 dark:bg-emerald-700',
+                border: 'border-green-600 dark:border-emerald-500',
+                text: 'text-green-600 dark:text-emerald-300',
+                bgLight: 'bg-green-50 dark:bg-emerald-950/60',
+                hover: 'hover:border-green-400 dark:hover:border-emerald-700'
               }
             }[profile.color];
 
@@ -135,10 +135,10 @@ export function ProfileSelectionPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 onClick={() => setSelectedProfile(profile.id)}
-                className={`relative bg-white rounded-2xl p-8 text-left transition-all duration-300 ${
+                className={`relative bg-white dark:bg-[#1a101a] rounded-2xl p-6 sm:p-8 text-left transition-all duration-300 ${
                   isSelected
                     ? `border-2 ${colorClasses.border} shadow-xl`
-                    : `border-2 border-gray-200 ${colorClasses.hover} shadow-md hover:shadow-lg`
+                    : `border-2 border-gray-200 dark:border-pink-900/20 ${colorClasses.hover} shadow-md hover:shadow-lg`
                 }`}
               >
                 {/* Selected indicator */}
@@ -160,13 +160,13 @@ export function ProfileSelectionPage() {
                 </div>
 
                 {/* Content */}
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">{profile.title}</h3>
-                <p className="text-gray-600 mb-6 leading-relaxed">{profile.description}</p>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">{profile.title}</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">{profile.description}</p>
 
                 {/* Features */}
                 <ul className="space-y-2">
                   {profile.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm text-gray-700">
+                    <li key={i} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
                       <div className={`w-1.5 h-1.5 ${colorClasses.bg} rounded-full`}></div>
                       {feature}
                     </li>
@@ -187,7 +187,7 @@ export function ProfileSelectionPage() {
           <button
             onClick={handleContinue}
             disabled={!selectedProfile || isLoading}
-            className="w-full bg-blue-600 text-white py-4 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+            className="w-full bg-blue-600 dark:bg-pink-600 text-white py-4 px-6 rounded-lg hover:bg-blue-700 dark:hover:bg-pink-700 transition-colors font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
           >
             {isLoading ? (
               <>
@@ -203,7 +203,7 @@ export function ProfileSelectionPage() {
           </button>
 
           {!selectedProfile && (
-            <p className="text-center text-sm text-gray-500 mt-4">
+            <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
               Selecione um perfil para continuar
             </p>
           )}
@@ -212,3 +212,7 @@ export function ProfileSelectionPage() {
     </div>
   );
 }
+
+
+
+

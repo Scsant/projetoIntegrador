@@ -12,7 +12,7 @@ export function RecoverPasswordPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     // Simular envio de email
     setTimeout(() => {
       setIsLoading(false);
@@ -23,25 +23,25 @@ export function RecoverPasswordPage() {
   return (
     <>
       <FloatingNav backTo="/login" backLabel="Login" />
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-[#0f0a0f] dark:to-[#1a101a] flex items-center justify-center p-4">
         <div className="w-full max-w-md">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="bg-white rounded-2xl shadow-xl p-8 md:p-10">
+            <div className="bg-white dark:bg-[#1a101a] rounded-2xl shadow-xl p-8 md:p-10">
               {/* Logo */}
               <div className="flex items-center gap-2 justify-center mb-8">
-                <Calendar className="w-8 h-8 text-blue-600" />
-                <span className="text-2xl font-bold text-gray-900">EscolaAgenda</span>
+                <Calendar className="w-8 h-8 text-blue-600 dark:text-pink-400" />
+                <span className="text-2xl font-bold text-gray-900 dark:text-white">EscolaAgenda</span>
               </div>
 
               {!isSuccess ? (
                 <>
                   <div className="text-center mb-8">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Recuperar senha</h2>
-                    <p className="text-gray-600">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Recuperar senha</h2>
+                    <p className="text-gray-600 dark:text-gray-300">
                       Insira seu e-mail e enviaremos instruções para redefinir sua senha
                     </p>
                   </div>
@@ -49,11 +49,11 @@ export function RecoverPasswordPage() {
                   <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Email field */}
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         E-mail
                       </label>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                         <input
                           id="email"
                           type="email"
@@ -61,7 +61,7 @@ export function RecoverPasswordPage() {
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="seu.email@escola.com"
                           required
-                          className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                          className="w-full pl-11 pr-4 py-3 border border-gray-300 dark:border-pink-900/30 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-pink-500 focus:border-transparent dark:focus:border-pink-500 outline-none transition-all dark:bg-[#221420] dark:text-white dark:placeholder:text-gray-500"
                         />
                       </div>
                     </div>
@@ -70,7 +70,7 @@ export function RecoverPasswordPage() {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full bg-blue-600 dark:bg-pink-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 dark:hover:bg-pink-700 transition-colors font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isLoading ? (
                         <>
@@ -96,17 +96,17 @@ export function RecoverPasswordPage() {
                   <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <CheckCircle className="w-10 h-10 text-green-600" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">E-mail enviado!</h3>
-                  <p className="text-gray-600 mb-2">
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">E-mail enviado!</h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-2">
                     Enviamos as instruções para recuperação de senha para:
                   </p>
-                  <p className="text-blue-600 font-medium mb-6">{email}</p>
-                  <p className="text-sm text-gray-500 mb-8">
+                  <p className="text-blue-600 dark:text-pink-400 font-medium mb-6">{email}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">
                     Verifique sua caixa de entrada e a pasta de spam. O link expira em 24 horas.
                   </p>
                   <Link
                     to="/login"
-                    className="inline-block w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                    className="inline-block w-full bg-blue-600 dark:bg-pink-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 dark:hover:bg-pink-700 transition-colors font-medium"
                   >
                     Voltar para o login
                   </Link>
@@ -117,7 +117,7 @@ export function RecoverPasswordPage() {
                 <div className="text-center mt-6">
                   <Link
                     to="/login"
-                    className="text-sm text-gray-600 hover:text-gray-900 transition-colors inline-flex items-center gap-1"
+                    className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors inline-flex items-center gap-1"
                   >
                     <ArrowLeft className="w-4 h-4" />
                     Voltar para o login

@@ -42,40 +42,42 @@
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #f5f5f5;
-  --card: #171717;
-  --card-foreground: #f5f5f5;
-  --popover: #171717;
-  --popover-foreground: #f5f5f5;
-  --primary: #3b82f6;
-  --primary-foreground: #0a0a0a;
-  --secondary: #262626;
-  --secondary-foreground: #f5f5f5;
-  --muted: #262626;
-  --muted-foreground: #a3a3a3;
-  --accent: #262626;
-  --accent-foreground: #f5f5f5;
+  --background: #0f0a0f;
+  --foreground: #fdf0f5;
+  --card: #1a101a;
+  --card-foreground: #fdf0f5;
+  --popover: #1a101a;
+  --popover-foreground: #fdf0f5;
+  --primary: #ec4899;
+  --primary-foreground: #ffffff;
+  --secondary: #221420;
+  --secondary-foreground: #fdf0f5;
+  --muted: #221420;
+  --muted-foreground: #b090a0;
+  --accent: #2c1a28;
+  --accent-foreground: #fdf0f5;
   --destructive: #dc2626;
   --destructive-foreground: #fef2f2;
-  --border: #262626;
-  --input: #262626;
-  --ring: #525252;
+  --border: rgba(236, 72, 153, 0.2);
+  --input: #221420;
+  --input-background: #221420;
+  --switch-background: #6d1040;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: #0a0a0a;
-  --sidebar-foreground: #f5f5f5;
-  --sidebar-primary: #3b82f6;
-  --sidebar-primary-foreground: #0a0a0a;
-  --sidebar-accent: #262626;
-  --sidebar-accent-foreground: #f5f5f5;
-  --sidebar-border: #262626;
-  --sidebar-ring: #525252;
+  --ring: rgba(236, 72, 153, 0.5);
+  --chart-1: oklch(0.65 0.25 350);
+  --chart-2: oklch(0.7 0.2 320);
+  --chart-3: oklch(0.75 0.18 30);
+  --chart-4: oklch(0.6 0.22 280);
+  --chart-5: oklch(0.68 0.2 10);
+  --sidebar: #0f0a0f;
+  --sidebar-foreground: #fdf0f5;
+  --sidebar-primary: #ec4899;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #221420;
+  --sidebar-accent-foreground: #fdf0f5;
+  --sidebar-border: rgba(236, 72, 153, 0.2);
+  --sidebar-ring: rgba(236, 72, 153, 0.5);
 }
 
 @theme inline {

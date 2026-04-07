@@ -4,12 +4,14 @@ import { LoginPage } from "./components/LoginPage";
 import { RecoverPasswordPage } from "./components/RecoverPasswordPage";
 import { ProfileSelectionPage } from "./components/ProfileSelectionPage";
 import { DashboardPage } from "./components/DashboardPage";
+import { HomePage } from "./components/HomePage";
 import { NotFoundPage } from "./components/NotFoundPage";
 import { AgendaPage } from "./components/AgendaPage";
 import { ProfessorAgendaPage } from "./components/ProfessorAgendaPage";
 import { DirecaoPage } from "./components/DirecaoPage";
 import { NotificationsPage } from "./components/NotificationsPage";
 import { DesignSystemPage } from "./components/DesignSystemPage";
+import { SettingsPage } from "./components/SettingsPage";
 
 export const router = createBrowserRouter([
   {
@@ -30,7 +32,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    Component: DashboardPage,
+    Component: HomePage,
   },
   {
     path: "/dashboard/agenda",
@@ -58,7 +60,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/dashboard/configuracoes",
-    Component: DashboardPage,
+    Component: SettingsPage,
   },
   {
     path: "/design-system",

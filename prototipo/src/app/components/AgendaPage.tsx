@@ -103,7 +103,7 @@ const mockEvents: AgendaEvent[] = [
 
 const initialFormState: CreateEventForm = {
   title: '',
-  date: '2026-03-07',
+  date: new Date().toLocaleDateString('sv-SE'),  // Data local no formato YYYY-MM-DD
   category: 'reuniao',
   startTime: '09:00',
   endTime: '10:00',
@@ -114,7 +114,7 @@ const initialFormState: CreateEventForm = {
 
 export function AgendaPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('week');
-  const [currentDate, setCurrentDate] = useState(new Date(2026, 2, 7));
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState<AgendaEvent | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -323,7 +323,7 @@ export function AgendaPage() {
             const day = i + 1;
             const date = new Date(year, month, day);
             const dayEvents = getEventsForDate(date);
-            const isToday = date.toDateString() === new Date(2026, 2, 7).toDateString();
+            const isToday = date.toDateString() === new Date().toDateString();
 
             return (
               <motion.div
@@ -363,7 +363,7 @@ export function AgendaPage() {
         <div className="overflow-x-auto"><div className="min-w-[720px]"><div className="grid grid-cols-8 border-b border-gray-200 dark:border-pink-900/20">
           <div className="p-4 border-r border-gray-200 dark:border-pink-900/20"></div>
           {weekDays.map((day) => {
-            const isToday = day.toDateString() === new Date(2026, 2, 7).toDateString();
+            const isToday = day.toDateString() === new Date().toDateString();
             return (
               <div key={day.toISOString()} className={`p-4 text-center border-r border-gray-200 dark:border-pink-900/20 ${isToday ? 'bg-blue-50 dark:bg-pink-900/20' : ''}`}>
                 <div className="text-xs text-gray-600 dark:text-gray-300 uppercase">{day.toLocaleDateString('pt-BR', { weekday: 'short' })}</div>
@@ -523,7 +523,7 @@ export function AgendaPage() {
               <button onClick={() => navigateDate('prev')} className="p-2 hover:bg-gray-100 dark:hover:bg-[#2c1a28] rounded-lg transition-colors"><ChevronLeft className="w-5 h-5 text-gray-700 dark:text-gray-200" /></button>
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white capitalize min-w-[200px] text-center">{getDateString()}</h2>
               <button onClick={() => navigateDate('next')} className="p-2 hover:bg-gray-100 dark:hover:bg-[#2c1a28] rounded-lg transition-colors"><ChevronRight className="w-5 h-5 text-gray-700 dark:text-gray-200" /></button>
-              <button onClick={() => setCurrentDate(new Date(2026, 2, 7))} className="px-3 py-1 text-sm bg-gray-100 dark:bg-[#221420] text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-[#2c1a28] transition-colors">Hoje</button>
+              <button onClick={() => setCurrentDate(new Date())} className="px-3 py-1 text-sm bg-gray-100 dark:bg-[#221420] text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-[#2c1a28] transition-colors">Hoje</button>
             </div>
             <div className="flex items-center gap-2 bg-gray-100 dark:bg-[#221420] rounded-lg p-1">
               <button onClick={() => setViewMode('month')} className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${viewMode === 'month' ? 'bg-white dark:bg-[#2c1a28] text-gray-900 dark:text-white shadow-sm' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}`}>Mes</button>
